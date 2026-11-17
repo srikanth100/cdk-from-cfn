@@ -6,9 +6,12 @@ on:
     - cron: "0 9 * * 1"
   # Allow manual triggering
   workflow_dispatch: {}
+  push:
+    branches: [test/update-cdk-schema-fork]
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   update-cdk-schema:
@@ -30,9 +33,10 @@ jobs:
           title: "feat: update the patched CDK schema"
           commit-message: "feat: update the patched CDK schema"
           branch: "automation/update-cdk-schema"
+          base: test/update-cdk-schema-fork
           labels: "auto-approve"
           delete-branch: true
-          token: ${{ secrets.PROJEN_GITHUB_TOKEN }}
+          token: ${{ github.token }}
           body: |
             This automated PR regenerates `src/specification` with [cdk-patched-schema-generator](https://github.com/cdklabs/cdk-patched-schema-generator), so cdk-from-cfn supports the latest CloudFormation resource types and properties.
 
